@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0">
+  <!-- Copy files to the output path, maintain the directory tree -->
+  <Target Name="Build" DependsOnTargets="MakeDirectories;CalculateNewPaths">
+    <Copy SourceFiles="@(Content)"
+          DestinationFiles="@(Content->'%(CopyToLocation)')" />
+
+    <WriteLinesToFile File="$(IntermediateOutputPath)copiedfiles.tlog"
+                      Lines="@(Content->'%(CopyToLocation)')" />
+  </Target>
+  
+  <Target Name="Clean">
+    <ReadLinesFromFile File="$(IntermediateOutputPath)copiedfiles.tlog"
+                       Condition="Exists('$(IntermediateOutputPath)copiedfiles.tlog')">
+      <Output TaskParameter="Lines" ItemName="CopiedFiles" />
+    </ReadLinesFromFile>
+    
+    <Delete Files="@(CopiedFiles)"
+            ContinueOnError="true" />
+    <Delete Files="$(IntermediateOutputPath)copiedfiles.tlog"
+            ContinueOnError="true" />
+  </Target>
+  
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+  <Target Name="MakeDirectories">
+    <MakeDir Directories="$(OutputPath);$(IntermediateOutputPath)" />
+  </Target>
+
+  <Target Name="CalculateNewPaths">
+    <ItemGroup>
+      <Content>
+        <CopyToLocation>$(OutputPath)%(RelativeDir)%(Filename)%(Extension)</CopyToLocation>
+      </Content>
+    </ItemGroup>
+  </Target>
+</Project>

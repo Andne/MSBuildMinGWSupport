@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0">
+  
+  <!-- First need to load all of the default properties -->
+  <Import Project="MinGWSupport.props" />
+  
+  <!-- Load the project-type specific targets -->
+  <Import Project="MinGWSupport(MSBuildProjectExtension).targets" Condition="'$(FileCopyOnlyProject)' != 'true'" />
+  <Import Project="MinGWSupport.copyproj.targets" Condition="'$(FileCopyOnlyProject)' == 'true'" />
+  
+</Project>

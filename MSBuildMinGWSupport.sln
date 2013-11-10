@@ -1,7 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Cpp_V110", "Microsoft.Cpp_V110\Microsoft.Cpp_V110.csproj", "{9C902D65-1555-4811-AE56-6D5AF5341F29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{204FFB1B-8C1A-436D-A46E-B72653EE201D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Files", "Build Files", "{EE7B2E22-52C1-47B0-BEBD-2391DEF59352}"
+	ProjectSection(SolutionItems) = preProject
+		Tools\MinGWSupport.copyproj.targets = Tools\MinGWSupport.copyproj.targets
+		MinGWSupport.proj = MinGWSupport.proj
+		Tools\MinGWSupport.props = Tools\MinGWSupport.props
+		Tools\MinGWSupport.targets = Tools\MinGWSupport.targets
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

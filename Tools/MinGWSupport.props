@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0">
+  
+  <PropertyGroup>
+    <!-- Base folder for the project, everything else is derived from this -->
+    <MinGWSupportRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))</MinGWSupportRoot>
+    <MinGWSupportRoot Condition="!HasTrailingSlash('$(MinGWSupportRoot)')">$(MinGWSupportRoot)\</MinGWSupportRoot>
+
+    <!-- Root paths were all build output goes to -->
+    <BaseOutputPath>$(MinGWSupportRoot)_Output\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MinGWSupportRoot)_Intermediate\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  
+  <!-- Intermediate directories don't care about the project type or purpose -->
+  <PropertyGroup>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+  </PropertyGroup>
+  
+  <!-- Make sure the platform is what I expect - generic for .net projects, 32bit for the installers -->
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == '' and '$(MSBuildProjectExtension)' == '.csproj'">AnyCPU</Platform>
+    <Platform Condition="'$(Platform)' == ''">x86</Platform>
+  </PropertyGroup>
+
+  <!-- Settings specific to the actual type of project, if they exist -->
+  <Import Project="MinGWSupport$(MSBuildProjectExtension).props" Condition="Exists('MinGWSupport$(MSBuildProjectExtension).props')" />
+
+  <!-- If the project defines itself as using VCTargetsRoot, then output to there -->
+  <PropertyGroup Condition="'$(VCTargetsRootProject)' == 'true'">
+    <OutputPath>$(BaseOutputPath)$(Configuration)\VCTargetsRoot\</OutputPath>
+  </PropertyGroup>
+</Project>

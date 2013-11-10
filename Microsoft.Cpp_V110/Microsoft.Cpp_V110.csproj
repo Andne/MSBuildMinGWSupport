@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9C902D65-1555-4811-AE56-6D5AF5341F29}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <VCTargetsRootProject>true</VCTargetsRootProject>
+    <FileCopyOnlyProject>true</FileCopyOnlyProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="1033\cl.xml" />
+    <Content Include="Microsoft.Build.CPPTasks.Common.v110.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Microsoft.Cpp.Default.props" />
+    <Content Include="Microsoft.Cpp.props" />
+    <Content Include="Microsoft.Cpp.targets" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
+</Project>
