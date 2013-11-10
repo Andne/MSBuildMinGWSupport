@@ -18,5 +18,27 @@
     <Content Include="Microsoft.Cpp.props" />
     <Content Include="Microsoft.Cpp.targets" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.Common.props" />
+    <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.default.props" />
+    <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.props" />
+    <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.targets" />
+    <Content Include="Platforms\Win32\PlatformToolsets\v110\Microsoft.Cpp.Win32.v110.props" />
+    <Content Include="Platforms\Win32\PlatformToolsets\v110\Microsoft.Cpp.Win32.v110.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Microsoft.Cpp.Platform.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Microsoft.CppCommon.targets">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Platforms\x64\Microsoft.Cpp.x64.Common.props" />
+    <None Include="Platforms\x64\Microsoft.Cpp.x64.default.props" />
+    <None Include="Platforms\x64\Microsoft.Cpp.x64.props" />
+    <None Include="Platforms\x64\Microsoft.Cpp.x64.targets" />
+    <None Include="Platforms\x64\PlatformToolsets\v110\Microsoft.Cpp.x64.v110.props" />
+    <None Include="Platforms\x64\PlatformToolsets\v110\Microsoft.Cpp.x64.v110.targets" />
+  </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
 </Project>

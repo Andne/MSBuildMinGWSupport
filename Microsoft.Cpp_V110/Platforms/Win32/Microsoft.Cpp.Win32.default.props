@@ -1,0 +1,49 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.Cpp.Win32.default.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Import Before -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore\Default')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore\Default\*.props" />
+
+  <PropertyGroup>
+    <PlatformShortName>x86</PlatformShortName>
+    <PlatformArchitecture>32</PlatformArchitecture>
+    <PlatformTarget>x86</PlatformTarget>
+    <DefaultPlatformToolset Condition="'$(DefaultPlatformToolset)' == ''">v110</DefaultPlatformToolset>
+    <!-- Define toolsets that can be upgraded v110 -->
+    <!-- We have the upgrade toolset even for v110 to be able to tell between "no upgrade required"  and " no upgrade available" situations  -->
+    <_UpgradePlatformToolsetFor_v110 Condition="'$(_UpgradePlatformToolsetFor_v110)' == ''">$(DefaultPlatformToolset)</_UpgradePlatformToolsetFor_v110>
+    <_UpgradePlatformToolsetFor_v100 Condition="'$(_UpgradePlatformToolsetFor_v100)' == ''">$(DefaultPlatformToolset)</_UpgradePlatformToolsetFor_v100>
+    <_UpgradePlatformToolsetFor_v90 Condition="'$(_UpgradePlatformToolsetFor_v90)' == ''">$(DefaultPlatformToolset)</_UpgradePlatformToolsetFor_v90>
+
+    <!-- Friendly name for platform toolsets-->
+    <_PlatformToolsetShortNameFor_v100 Condition="'$(_PlatformToolsetShortNameFor_v100)' == ''">Visual Studio 2010</_PlatformToolsetShortNameFor_v100>
+    <_PlatformToolsetShortNameFor_v90 Condition="'$(_PlatformToolsetShortNameFor_v90)' == ''">Visual Studio 2008</_PlatformToolsetShortNameFor_v90>
+
+    <_PlatformToolsetFriendlyNameFor_v110_xp Condition="'$(_PlatformToolsetFriendlyNameFor_v110_xp)' == ''">Visual Studio 2012 - Windows XP (v110_xp)</_PlatformToolsetFriendlyNameFor_v110_xp>
+    <_PlatformToolsetFriendlyNameFor_v110 Condition="'$(_PlatformToolsetFriendlyNameFor_v110)' == ''">Visual Studio 2012 (v110)</_PlatformToolsetFriendlyNameFor_v110>
+    <_PlatformToolsetFriendlyNameFor_v100 Condition="'$(_PlatformToolsetFriendlyNameFor_v100)' == ''">Visual Studio 2010 (v100)</_PlatformToolsetFriendlyNameFor_v100>
+    <_PlatformToolsetFriendlyNameFor_v90 Condition="'$(_PlatformToolsetFriendlyNameFor_v90)' == ''">Visual Studio 2008 (v90)</_PlatformToolsetFriendlyNameFor_v90>
+
+    <!-- Have to maintain compatibility with VS2010 projects, which might not have toolset defined in the project-->
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">$(DefaultWin32PlatformToolset)</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v100</PlatformToolset>
+
+    <!-- Required for enabling Team Build for packaging Windows Store app projects -->
+    <OutDirWasSpecified Condition=" '$(OutDir)'!='' AND '$(OutDirWasSpecified)'=='' ">true</OutDirWasSpecified>
+    <OutDirWasSpecified Condition=" '$(OutDir)'=='' AND '$(OutDirWasSpecified)'=='' ">false</OutDirWasSpecified>
+  </PropertyGroup>
+
+  <!-- Import After -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter\Default')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter\Default\*.props" />
+</Project>
