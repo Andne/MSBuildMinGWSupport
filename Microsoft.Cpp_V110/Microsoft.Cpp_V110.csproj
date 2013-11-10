@@ -10,7 +10,46 @@
     <FileCopyOnlyProject>true</FileCopyOnlyProject>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="1033\alink.xml" />
+    <Content Include="1033\AppHostDebugger_Local.xml" />
+    <Content Include="1033\AppHostDebugger_Remote.xml" />
+    <Content Include="1033\AppHostDebugger_Simulator.xml" />
+    <Content Include="1033\AppHostDebugger_Tethered.xml" />
+    <Content Include="1033\bscmake.xml" />
+    <Content Include="1033\build_events.xml" />
     <Content Include="1033\cl.xml" />
+    <Content Include="1033\custom_build_step.xml" />
+    <Content Include="1033\custom_build_tool.xml" />
+    <Content Include="1033\debugger_general.xml" />
+    <Content Include="1033\debugger_local_windows.xml" />
+    <Content Include="1033\debugger_remote_windows.xml" />
+    <Content Include="1033\debugger_web_browser.xml" />
+    <Content Include="1033\debugger_web_service.xml" />
+    <Content Include="1033\directories.xml" />
+    <Content Include="1033\envvars.xml" />
+    <Content Include="1033\folder.xml" />
+    <Content Include="1033\fxc.xml" />
+    <Content Include="1033\general.xml" />
+    <Content Include="1033\general_appcontainerapplication.xml" />
+    <Content Include="1033\general_file.xml" />
+    <Content Include="1033\general_makefile.xml" />
+    <Content Include="1033\general_makefile_ps.xml" />
+    <Content Include="1033\general_ps.xml" />
+    <Content Include="1033\lib.xml" />
+    <Content Include="1033\link.xml" />
+    <Content Include="1033\midl.xml" />
+    <Content Include="1033\mt.xml" />
+    <Content Include="1033\nmake.xml" />
+    <Content Include="1033\ProjectItemsSchema.xml" />
+    <Content Include="1033\rc.xml" />
+    <Content Include="1033\resgen.xml" />
+    <Content Include="1033\usermacros.xml" />
+    <Content Include="1033\xdcmake.xml" />
+    <Content Include="1033\xp_AppHostDebugger_Local.xml" />
+    <Content Include="1033\xsd.xml" />
+    <Content Include="BuildCustomizations\lc.xml" />
+    <Content Include="BuildCustomizations\masm.xml" />
+    <Content Include="fxcop.xml" />
     <Content Include="Microsoft.Build.CPPTasks.Common.v110.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -19,6 +58,7 @@
     <Content Include="Microsoft.Cpp.targets" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="msbldver.dll" />
     <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.Common.props" />
     <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.default.props" />
     <Content Include="Platforms\Win32\Microsoft.Cpp.Win32.props" />
@@ -30,15 +70,67 @@
     <Content Include="Microsoft.Cpp.Platform.targets" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BuildCustomizations\lc.props" />
+    <None Include="BuildCustomizations\lc.targets" />
+    <None Include="BuildCustomizations\masm.props" />
+    <None Include="BuildCustomizations\masm.targets" />
+    <None Include="Microsoft.BuildSteps.targets" />
+    <None Include="Microsoft.Cl.Common.props" />
+    <None Include="Microsoft.CodeAnalysis.props" />
+    <None Include="Microsoft.Cpp.AppContainerApplication.props" />
+    <None Include="Microsoft.Cpp.Application.props" />
+    <None Include="Microsoft.Cpp.ATLDynamic.props" />
+    <None Include="Microsoft.Cpp.ATLStatic.props" />
+    <None Include="Microsoft.Cpp.BuildBsc.props" />
+    <None Include="Microsoft.Cpp.Common.props" />
+    <None Include="Microsoft.Cpp.CoreWin.props" />
+    <None Include="Microsoft.Cpp.InvalidPlatform.targets" />
+    <None Include="Microsoft.Cpp.ManagedExtensions.props" />
+    <None Include="Microsoft.Cpp.managedExtensionsOldSyntax.props" />
+    <None Include="Microsoft.Cpp.ManagedExtensionsPure.props" />
+    <None Include="Microsoft.Cpp.ManagedExtensionsSafe.props" />
+    <None Include="Microsoft.Cpp.mfcDynamic.props" />
+    <None Include="Microsoft.Cpp.mfcStatic.props" />
+    <None Include="Microsoft.Cpp.MultiByteCharSupport.props" />
+    <None Include="Microsoft.Cpp.pginstrument.props" />
+    <None Include="Microsoft.Cpp.pgoptimize.props" />
+    <None Include="Microsoft.Cpp.pgupdate.props" />
+    <None Include="Microsoft.Cpp.Platform.props" />
+    <None Include="Microsoft.Cpp.Platform.Redirect.props" />
+    <None Include="Microsoft.Cpp.Platform.Redirect.targets" />
+    <None Include="Microsoft.Cpp.Redirect.Common.targets" />
+    <None Include="Microsoft.Cpp.Redirect.targets" />
+    <None Include="Microsoft.Cpp.StaticAnalysis.props" />
+    <None Include="Microsoft.Cpp.unicodesupport.props" />
+    <None Include="Microsoft.Cpp.UpgradeFromVC60.props" />
+    <None Include="Microsoft.Cpp.UpgradeFromVC70.props" />
+    <None Include="Microsoft.Cpp.UpgradeFromVC71.props" />
+    <None Include="Microsoft.Cpp.WholeProgramOptimization.props" />
+    <None Include="Microsoft.Cpp.WinDLL.props" />
+    <None Include="Microsoft.CppBuild.targets" />
+    <None Include="Microsoft.CppClean.targets" />
     <None Include="Microsoft.CppCommon.targets">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Microsoft.Link.Common.props" />
+    <None Include="Microsoft.MakeFile.targets" />
+    <None Include="Microsoft.Metagen.targets" />
+    <None Include="Platforms\ARM\Microsoft.Cpp.ARM.Common.props" />
+    <None Include="Platforms\ARM\Microsoft.Cpp.ARM.default.props" />
+    <None Include="Platforms\ARM\Microsoft.Cpp.ARM.props" />
+    <None Include="Platforms\ARM\Microsoft.Cpp.ARM.targets" />
+    <None Include="Platforms\ARM\PlatformToolsets\v110\Microsoft.Cpp.ARM.v110.props" />
+    <None Include="Platforms\ARM\PlatformToolsets\v110\Microsoft.Cpp.ARM.v110.targets" />
+    <None Include="Platforms\Win32\PlatformToolsets\v110_xp\Microsoft.Cpp.Win32.v110_xp.props" />
+    <None Include="Platforms\Win32\PlatformToolsets\v110_xp\Microsoft.Cpp.Win32.v110_xp.targets" />
     <None Include="Platforms\x64\Microsoft.Cpp.x64.Common.props" />
     <None Include="Platforms\x64\Microsoft.Cpp.x64.default.props" />
     <None Include="Platforms\x64\Microsoft.Cpp.x64.props" />
     <None Include="Platforms\x64\Microsoft.Cpp.x64.targets" />
     <None Include="Platforms\x64\PlatformToolsets\v110\Microsoft.Cpp.x64.v110.props" />
     <None Include="Platforms\x64\PlatformToolsets\v110\Microsoft.Cpp.x64.v110.targets" />
+    <None Include="Platforms\x64\PlatformToolsets\v110_xp\Microsoft.Cpp.x64.v110_xp.props" />
+    <None Include="Platforms\x64\PlatformToolsets\v110_xp\Microsoft.Cpp.x64.v110_xp.targets" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
 </Project>
