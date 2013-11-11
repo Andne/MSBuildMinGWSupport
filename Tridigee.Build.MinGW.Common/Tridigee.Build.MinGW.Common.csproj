@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{70487E8F-B575-4928-AE9D-DF0C471D48DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <VCTargetsRootProject>true</VCTargetsRootProject>
+    <FileCopyOnlyProject>true</FileCopyOnlyProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="1033\mingw_gcc.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.Cpp.Platform.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.Cpp.Platform.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.CppCommon.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.CppBuild.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.Cpp.Common.props" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
+</Project>

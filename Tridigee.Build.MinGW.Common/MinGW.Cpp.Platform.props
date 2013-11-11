@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ToolsetPropsFound Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\PlatformToolsets\$(PlatformToolset)\MinGW.Cpp.$(Platform).$(PlatformToolset).props')">true</ToolsetPropsFound>
+  </PropertyGroup>
+
+  <!-- Import Before -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore\*.props" />
+
+  <!-- Import Toolset specific properties -->
+  <Import Condition="'$(ToolsetPropsFound)' == 'true'" Project="$(VCTargetsPath)\Platforms\$(Platform)\PlatformToolsets\$(PlatformToolset)\MinGW.Cpp.$(Platform).$(PlatformToolset).props" />
+
+  <!-- Import After -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter\*.props" />
+
+</Project>

@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0">
+
+  <UsingTask TaskName="VCMessage" AssemblyName="Microsoft.Build.CppTasks.Common.v110, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+
+  <PropertyGroup>
+    <!-- If OutDir was set outside of the project file, then we will append ProjectName -->
+    <OutDir Condition="'$(OutDirWasSpecified)' == 'true' and ('$(GenerateProjectSpecificOutputFolder)' == 'true')">$(OutDir)$(ProjectName)\</OutDir>
+    
+    <!-- Correct OutputPath as it may be out of sync with OutDir -->
+    <OutputPath>$(OutDir)</OutputPath>
+
+    <TargetPath Condition="'$(TargetPath)' == ''">$([System.IO.Path]::Combine($(ProjectDir),$(OutDir)$(TargetName)$(TargetExt)))</TargetPath>
+    <TargetFileName Condition=" '$(TargetFileName)'=='' ">$([System.IO.Path]::GetFileName('$(TargetPath)'))</TargetFileName>
+    <TargetDir      Condition=" '$(TargetDir)'==''"      >$([System.IO.Path]::GetDirectoryName('$(TargetPath)'))</TargetDir>
+    <LocalDebuggerCommand Condition="'$(LocalDebuggerCommand)'==''">$(TargetPath)</LocalDebuggerCommand>
+    <ExtensionsToDeleteOnClean>$(OutDir)$(TargetName).tlb;$(TargetPath);$(OutDir)$(TargetName).bsc;$(OutDir)$(TargetName).ilk</ExtensionsToDeleteOnClean>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(IntDir)</IntermediateOutputPath>
+
+    <!-- After OutDir has been fixed, disable Microsoft.common.targets from fixing it again -->
+    <OutDirWasSpecified>false</OutDirWasSpecified>
+
+    <!-- Enable incremental build by enable file tracking in tasks-->
+    <TrackFileAccess Condition="'$(TrackFileAccess)' == ''">true</TrackFileAccess>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\MinGW.CppBuild.targets"/>
+
+  <!-- *******************************************************************************************
+        AvailableItemName
+       ******************************************************************************************* -->
+  <!-- Creates a connection between item names and the targets to build them. -->
+  <ItemGroup>
+    <AvailableItemName Include="ClCompile">
+      <Targets>ClCompile</Targets>
+    </AvailableItemName>
+    <AvailableItemName Include="CustomBuild">
+      <Targets>CustomBuild</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <!-- *******************************************************************************************
+        Build Events
+       ******************************************************************************************* -->
+  <PropertyGroup>
+    <_BuildSuffix>
+:VCEnd
+    </_BuildSuffix>
+  </PropertyGroup>
+
+  <Target Name="PreBuildEvent" Condition="'$(PreBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PreBuildEvent.Message)" Condition="'%(PreBuildEvent.Message)' != '' and '%(PreBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PreBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PreBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PreLinkEvent" Condition="'$(PreLinkEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PreLinkEvent.Message)" Condition="'%(PreLinkEvent.Message)' != '' and '%(PreLinkEvent.Command)' != ''"/>
+    <Exec Command="%(PreLinkEvent.Command)$(_BuildSuffix)" Condition="'%(PreLinkEvent.Command)' != ''"/>
+  </Target>
+
+  <Target Name="PostBuildEvent" Condition="'$(PostBuildEventUseInBuild)'!='false'">
+    <Message Text="Description: %(PostBuildEvent.Message)" Condition="'%(PostBuildEvent.Message)' != '' and '%(PostBuildEvent.Command)' != ''"/>
+    <Exec Command="%(PostBuildEvent.Command)$(_BuildSuffix)" Condition="'%(PostBuildEvent.Command)' != ''"/>
+  </Target>
+
+  <!-- *******************************************************************************************
+        Custom Build
+       ******************************************************************************************* -->
+  <PropertyGroup Condition="'$(CustomBuildAfterTargets)'!='' or '$(CustomBuildBeforeTargets)'!=''">
+    <CustomBuildToolBeforeTargets>$(CustomBuildBeforeTargets)</CustomBuildToolBeforeTargets>
+    <CustomBuildToolAfterTargets>$(CustomBuildAfterTargets)</CustomBuildToolAfterTargets>
+  </PropertyGroup>
+
+  <!--If no before/after targets are set, then set the default-->
+  <PropertyGroup Condition="'$(CustomBuildAfterTargets)'=='' and '$(CustomBuildBeforeTargets)'==''">
+    <CustomBuildToolBeforeTargets>Midl</CustomBuildToolBeforeTargets>
+    <CustomBuildToolAfterTargets>PreBuildEvent</CustomBuildToolAfterTargets>
+    <CustomBuildBeforeTargets>PostBuildEvent</CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets>BscMake</CustomBuildAfterTargets>
+  </PropertyGroup>
+
+  <!--  If Selective File Build is enabled, then dont let custom interupt the build order-->
+  <PropertyGroup Condition="'$(SelectedFiles)'!=''">
+    <CustomBuildToolBeforeTargets></CustomBuildToolBeforeTargets>
+    <CustomBuildToolAfterTargets></CustomBuildToolAfterTargets>
+    <CustomBuildBeforeTargets></CustomBuildBeforeTargets>
+    <CustomBuildAfterTargets></CustomBuildAfterTargets>
+  </PropertyGroup>
+
+  <Target Name="CustomBuild"
+          Condition="'@(CustomBuild)' != ''"
+          DependsOnTargets="SelectCustomBuild;ComputeCustomBuildOutput"
+          BeforeTargets="$(CustomBuildToolBeforeTargets)"
+          AfterTargets="$(CustomBuildToolAfterTargets)"
+          >
+
+    <PropertyGroup>
+      <CustomBuildToolArchitecture Condition="'$(CustomBuildToolArchitecture)' == ''">$(DefaultToolArchitecture)</CustomBuildToolArchitecture>
+    </PropertyGroup>
+
+    <CustomBuild
+      Sources                     ="@(CustomBuild)"
+      BuildSuffix                 ="$(_BuildSuffix)"
+
+      TrackerLogDirectory         ="%(CustomBuild.TrackerLogDirectory)"
+      MinimalRebuildFromTracking  ="%(CustomBuild.MinimalRebuildFromTracking)"
+
+      TLogReadFiles               ="@(CustomBuildTLogReadFiles)"
+      TLogWriteFiles              ="@(CustomBuildTLogWriteFiles)"
+      TrackFileAccess             ="$(TrackFileAccess)"
+      ToolArchitecture            ="$(CustomBuildToolArchitecture)"
+      TrackerFrameworkPath        ="$(CustomBuildTrackerFrameworkPath)"
+      TrackerSdkPath              ="$(CustomBuildTrackerSdkPath)"
+
+      AcceptableNonZeroExitCodes  ="%(CustomBuild.AcceptableNonZeroExitCodes)"
+      >
+    </CustomBuild>
+  </Target>
+
+  <Target Name="CustomBuildStep"
+          Condition="'@(CustomBuildStep)' != '' and '$(SelectedFiles)'==''"
+          Inputs="%(CustomBuildStep.Inputs);$(ProjectFileName)"
+          Outputs="%(CustomBuildStep.Outputs)"
+          DependsOnTargets="ComputeCustomBuildOutput"
+          BeforeTargets="$(CustomBuildBeforeTargets)"
+          AfterTargets="$(CustomBuildAfterTargets)"
+          >
+    <Message Text="Description: %(CustomBuildStep.Message)" Condition="%(CustomBuildStep.Message) != ''"/>
+
+    <!-- Appended tlog to track custom build events -->
+    <WriteLinesToFile File="$(TLogLocation)$(ProjectName).write.1.tlog" Lines="@(CustomBuildStep->'^%(Identity)');@(CustomBuildStep->MetaData('Outputs')->FullPath()->Distinct())"/>
+
+    <Exec Command="%(CustomBuildStep.Command)$(_BuildSuffix)" />
+  </Target>
+  
+  
+</Project>

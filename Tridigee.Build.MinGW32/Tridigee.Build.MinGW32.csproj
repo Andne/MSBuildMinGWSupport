@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1215C55-6705-4598-B4BE-E1FF17910892}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <VCTargetsRootProject>true</VCTargetsRootProject>
+    <FileCopyOnlyProject>true</FileCopyOnlyProject>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.default.props" />
+    <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.props" />
+    <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Platforms\MinGW32\PlatformToolsets\MinGW\MinGW.Cpp.MinGW32.MinGW.props" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
+</Project>

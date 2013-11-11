@@ -5,12 +5,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MinGWConsoleExample", "MinG
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|MinGW32 = Debug|MinGW32
 		Debug|Win32 = Debug|Win32
+		Release|MinGW32 = Release|MinGW32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Debug|MinGW32.ActiveCfg = Debug|MinGW32
+		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Debug|MinGW32.Build.0 = Debug|MinGW32
 		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Debug|Win32.ActiveCfg = Debug|Win32
 		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Debug|Win32.Build.0 = Debug|Win32
+		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Release|MinGW32.ActiveCfg = Release|MinGW32
+		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Release|MinGW32.Build.0 = Release|MinGW32
 		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Release|Win32.ActiveCfg = Release|Win32
 		{75FBF3ED-51EF-453B-8011-FDD9401ABC98}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection

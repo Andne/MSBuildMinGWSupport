@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Import Before -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore\Default')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportBefore\Default\*.props" />
+
+  <PropertyGroup>
+    <PlatformShortName>x86</PlatformShortName>
+    <PlatformArchitecture>32</PlatformArchitecture>
+    <PlatformTarget>x86</PlatformTarget>
+    <DefaultPlatformToolset Condition="'$(DefaultPlatformToolset)' == ''">MinGW</DefaultPlatformToolset>
+    
+    <!-- Define upgrade capabilities - None -->
+    <_UpgradePlatformToolsetFor_Tools_MinGW>MinGW</_UpgradePlatformToolsetFor_Tools_MinGW>
+    
+    <!-- Define some nice names -->
+    <_PlatformToolsetShortNameFor_Tools_MinGW Condition="'$(_PlatformToolsetShortNameFor_Tools_MinGW)' == ''">MinGW</_PlatformToolsetShortNameFor_Tools_MinGW>
+    <_PlatformToolsetFriendlyNameFor_Tools_MinGW Condition="'$(_PlatformToolsetFriendlyNameFor_Tools_MinGW)' == ''">MinGW</_PlatformToolsetFriendlyNameFor_Tools_MinGW>
+
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">MinGW</PlatformToolset>
+  </PropertyGroup>
+  
+  <!-- Import After -->
+  <Import Condition="Exists('$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter\Default')" Project="$(VCTargetsPath)\Platforms\$(Platform)\ImportAfter\Default\*.props" />
+</Project>

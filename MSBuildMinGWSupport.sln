@@ -13,6 +13,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Files", "Build Files"
 		Tools\MinGWSupport.targets = Tools\MinGWSupport.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tridigee.Build.MinGW.Common", "Tridigee.Build.MinGW.Common\Tridigee.Build.MinGW.Common.csproj", "{70487E8F-B575-4928-AE9D-DF0C471D48DD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C902D65-1555-4811-AE56-6D5AF5341F29} = {9C902D65-1555-4811-AE56-6D5AF5341F29}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tridigee.Build.MinGW32", "Tridigee.Build.MinGW32\Tridigee.Build.MinGW32.csproj", "{A1215C55-6705-4598-B4BE-E1FF17910892}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9C902D65-1555-4811-AE56-6D5AF5341F29} = {9C902D65-1555-4811-AE56-6D5AF5341F29}
+		{70487E8F-B575-4928-AE9D-DF0C471D48DD} = {70487E8F-B575-4928-AE9D-DF0C471D48DD}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +34,14 @@ Global
 		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C902D65-1555-4811-AE56-6D5AF5341F29}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{70487E8F-B575-4928-AE9D-DF0C471D48DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70487E8F-B575-4928-AE9D-DF0C471D48DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70487E8F-B575-4928-AE9D-DF0C471D48DD}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{70487E8F-B575-4928-AE9D-DF0C471D48DD}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{A1215C55-6705-4598-B4BE-E1FF17910892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1215C55-6705-4598-B4BE-E1FF17910892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1215C55-6705-4598-B4BE-E1FF17910892}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1215C55-6705-4598-B4BE-E1FF17910892}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

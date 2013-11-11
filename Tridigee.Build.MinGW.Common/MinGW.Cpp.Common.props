@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- *******************************************************************************************
+        Cpp settings mapping file
+       ******************************************************************************************* -->
+  <!-- Default values -->
+  <PropertyGroup>
+    <TargetExt />
+  </PropertyGroup>
+
+  <!-- Specific values -->
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'Application'">
+    <LinkCompiled>true</LinkCompiled>
+    <TargetExt>.exe</TargetExt>
+    <OutputType>exe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'DynamicLibrary'">
+    <LinkCompiled>true</LinkCompiled>
+    <!-- $(GenerateImportLib) should be set to true when you want to generate the import library as part of the BuildCompile pass rather than wait
+         until the BuildLink pass for Linker to generate it. This allows circular dependencies between dlls to be satisfied when building using passes -->
+    <ImpLibCompiled Condition="'$(GenerateImportLib)'=='true'">true</ImpLibCompiled>
+    <TargetExt>.dll</TargetExt>
+    <OutputType>library</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationType)' == 'StaticLibrary'">
+    <LibCompiled>true</LibCompiled>
+    <TargetExt>.lib</TargetExt>
+    <OutputType>staticlibrary</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Language>C++</Language>
+    <DefaultLanguageSourceExtension>.cpp</DefaultLanguageSourceExtension>
+  </PropertyGroup>
+
+  <!-- Define defaults for all tools for property page-->
+  <PropertyGroup>
+    <TargetName Condition="'$(TargetName)' == ''">$(ProjectName)</TargetName>
+    <ExtensionsToDeleteOnClean Condition="'$(ExtensionsToDeleteOnClean)' == ''">*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi</ExtensionsToDeleteOnClean>
+    <IncludeVersionInInteropName Condition="'$(IncludeVersionInInteropName)'==''" >true</IncludeVersionInInteropName>
+    <InteropOutputPath Condition="'$(InteropOutputPath)'==''" >Interop\</InteropOutputPath>
+    <EmbedManifest Condition="'$(EmbedManifest)'==''">true</EmbedManifest>
+    <PreBuildEventUseInBuild Condition="'$(PreBuildEventUseInBuild)' == ''">true</PreBuildEventUseInBuild>
+    <PreLinkEventUseInBuild Condition="'$(PreLinkEventUseInBuild)' == ''">true</PreLinkEventUseInBuild>
+    <PostBuildEventUseInBuild Condition="'$(PostBuildEventUseInBuild)' == ''">true</PostBuildEventUseInBuild>
+    <DocumentLibraryDependencies Condition="'$(DocumentLibraryDependencies)' == ''">true</DocumentLibraryDependencies>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <CustomBuild>
+      <Message                     Condition="'%(CustomBuild.Message)'                    == ''">Performing Custom Build Tools</Message>
+      <LinkObjects                 Condition="'%(CustomBuild.LinkObjects)'                == ''">true</LinkObjects>
+      <TreatOutputAsContent        Condition="'%(CustomBuild.TreatOutputAsContent)'       == ''">false</TreatOutputAsContent>
+      <TrackerLogDirectory         Condition="'%(CustomBuild.TrackerLogDirectory)'        == ''">$(TLogLocation)</TrackerLogDirectory>
+      <MinimalRebuildFromTracking  Condition="'%(CustomBuild.MinimalRebuildFromTracking)' == ''">true</MinimalRebuildFromTracking>
+      <AcceptableNonZeroExitCodes  Condition="'%(CustomBuild.AcceptableNonZeroExitCodes)' == ''">$(AcceptableNonZeroExitCodes)</AcceptableNonZeroExitCodes>
+    </CustomBuild>
+    <CustomBuildStep>
+      <Message                     Condition="'%(CustomBuildStep.Message)'==''" >Performing Custom Build Step</Message>
+    </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == '' and '$(ConfigurationType)' == 'StaticLibrary'">false</LinkLibraryDependencies>
+      <LinkLibraryDependencies      Condition="'%(ProjectReference.LinkLibraryDependencies)' == ''">true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs   Condition="'%(ProjectReference.UseLibraryDependencyInputs)' == ''">false</UseLibraryDependencyInputs>
+      <ReferenceOutputAssembly      Condition="'%(ProjectReference.ReferenceOutputAssembly)' == ''">true</ReferenceOutputAssembly>
+      <Private                      Condition="'%(ProjectReference.Private)' == ''">true</Private>
+      <SetPlatform                  Condition="'%(ProjectReference.SetPlatform)' == '' and '$(Platform_Actual)' == 'Win32'">Platform=x86</SetPlatform>
+    </ProjectReference>
+    <Reference>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </Reference>
+    <COMReference>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </COMReference>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <!--  Unique items for the project-->
+    <CustomBuildStep Include="$(ProjectName)" />
+    <PreBuildEvent Include="$(ProjectName)" />
+    <PreLinkEvent Include="$(ProjectName)" />
+    <PostBuildEvent Include="$(ProjectName)" />
+  </ItemGroup>
+
+</Project>
