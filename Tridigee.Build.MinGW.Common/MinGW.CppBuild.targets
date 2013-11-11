@@ -71,20 +71,13 @@
 
     <BuildLinkTargets Condition="'$(ConfigurationType)'!='Utility'">
       $(BuildLinkTargets);
-      ComputeLegacyManifestEmbedding;
       _Link;
-      _ALink;
-      _Manifest;
       RegisterOutput;
-      _XdcMake;
-      _BscMake;
     </BuildLinkTargets>
 
     <AfterBuildLinkTargets Condition="'$(ConfigurationType)'!='Utility'">
       $(AfterBuildLinkTargets);
       CreateSatelliteAssemblies;
-      _Appverifier;
-      _Deploy;
       PrepareForRun;
       PostBuildEvent;
     </AfterBuildLinkTargets>
@@ -191,9 +184,9 @@
   </Target>
 
   <PropertyGroup>
-    <ResolveReferencesDependsOn>_PrepareForReferenceResolution;ComputeCrtSDKReference;$(ResolveReferencesDependsOn)</ResolveReferencesDependsOn>
+    <ResolveReferencesDependsOn>_PrepareForReferenceResolution;$(ResolveReferencesDependsOn)</ResolveReferencesDependsOn>
     <ResolveAssemblyReferencesDependsOn>_PrepareForReferenceResolution;$(ResolveAssemblyReferencesDependsOn)</ResolveAssemblyReferencesDependsOn>
-    <ResolveSDKReferencesDependsOn>_PrepareForReferenceResolution;ComputeCrtSDKReference;$(ResolveSDKReferencesDependsOn)</ResolveSDKReferencesDependsOn>
+    <ResolveSDKReferencesDependsOn>_PrepareForReferenceResolution;$(ResolveSDKReferencesDependsOn)</ResolveSDKReferencesDependsOn>
   </PropertyGroup>
 
   <!-- *******************************************************************************************
@@ -239,7 +232,7 @@
   <!-- *******************************************************************************************
         PrepareForBuild target
        ******************************************************************************************* -->
-  <Target Name="PrepareForBuild" DependsOnTargets="SetBuildDefaultEnvironmentVariables;SetUserMacroEnvironmentVariables;GetResolvedWinMD;$(PrepareForBuildDependsOn)">
+  <Target Name="PrepareForBuild" DependsOnTargets="SetBuildDefaultEnvironmentVariables;SetUserMacroEnvironmentVariables;$(PrepareForBuildDependsOn)">
     <!-- These PropertyGroups are required because TargetPath and others are defined
        to contain an item list. We want that item list to be expanded so that it can be used
        as a regular property value and not as an item-list-with-transform. -->
@@ -269,6 +262,541 @@
     <!-- Create the directories for intermediate and final build products, and any other arbitrary directories. -->
     <MakeDir Directories="@(GeneralDirsToMake)"/>
   </Target>
+
+  <!-- *******************************************************************************************
+        CL targets
+       ******************************************************************************************* -->
+  <Target Name="_ClCompile"
+          DependsOnTargets="$(BeforeClCompileTargets);$(ComputeCompileInputsTargets);MakeDirsForCl;ClCompile;$(AfterCLCompileTargets)" >
+  </Target>
+
+  <!-- Easy to override before/after targets -->
+  <PropertyGroup>
+    <BeforeClCompileTargets>
+      $(BeforeClCompileTargets);
+      BeforeClCompile;
+    </BeforeClCompileTargets>
+    <AfterClCompileTargets>
+      $(AfterClCompileTargets);
+      AfterClCompile;
+    </AfterClCompileTargets>
+  </PropertyGroup>
+
+  <!-- List of directories and files whose directories should be made prior to running CL -->
+
+  <!-- Makes the the directories that CL uses -->
+  <Target Name="MakeDirsForCl">
+    <ItemGroup Condition="'@(CLCompile)'!=''">
+      <ClDirsToMake Include="@(CLCompile->Metadata('PrecompiledHeaderOutputFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('AssemblerListingLocation')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('ObjectFileName')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('ProgramDataBaseFileName')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('XMLDocumentationFileName')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('BrowseInformationFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <ClDirsToMake Include="@(CLCompile->Metadata('PreprocessOutputPath')->DirectoryName()->Distinct()->ClearMetadata())" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(ClDirsToMake)" />
+
+    <ItemGroup>
+      <ClDirsToMake Remove="@(ClDirsToMake)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BeforeClCompile"/>
+  <Target Name="AfterClCompile"/>
+
+  <Target Name="GetNativeTargetPath" DependsOnTargets="_PrepareForReferenceResolution" Returns="@(NativeTargetPath)" >
+    <ItemGroup>
+      <NativeTargetPath Include="$(TargetPath)" Condition="'$(ManagedAssembly)' != 'true'" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeCompileInputsTargets>
+      $(ComputeCompileInputsTargets);
+    </ComputeCompileInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Compute Custom Build Output
+       ******************************************************************************************* -->
+  <Target Name="ComputeCustomBuildOutput" >
+    <ItemGroup >
+      <CustomBuildDirsToMake Include="@(CustomBuild->Metadata('Outputs'))" Condition="'@(CustomBuild)' != ''"/>
+
+      <CustomBuildDirsToMake Condition="'%(CustomBuildDirsToMake.ExcludedFromBuild)'!='true' and '%(CustomBuildDirsToMake.OutputFileToTool)'=='' and '%(CustomBuildDirsToMake.LinkObjects)'=='true' and ('%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib')">
+        <OutputFileToTool Condition="'$(ConfigurationType)'=='StaticLibrary'">Lib</OutputFileToTool>
+        <OutputFileToTool Condition="'$(ConfigurationType)'!='StaticLibrary'">Link</OutputFileToTool>
+      </CustomBuildDirsToMake>
+    </ItemGroup>
+
+    <!-- Add CustomBuild Outputs to lib, link or other tools -->
+    <CreateItem
+        Include="%(CustomBuildDirsToMake.Outputs)"
+        Condition="'%(CustomBuildDirsToMake.OutputFileToTool)'!=''">
+      <Output
+          TaskParameter="Include"
+          ItemName="%(CustomBuildDirsToMake.OutputFileToTool)"/>
+      <Output
+          TaskParameter="Include"
+          Condition="'%(CustomBuildDirsToMake.OutputFileToTool)' == 'Link' and '$(GenerateImportLib)'=='true'"
+          ItemName="ImpLib"/>
+    </CreateItem>
+
+    <ItemGroup>
+      <CustomBuildDirsToMake Include="%(CustomBuildStep.Outputs)" Condition="'%(CustomBuildStep.Command)' != ''"/>
+    </ItemGroup>
+
+    <MakeDir Directories="@(CustomBuildDirsToMake->'%(RootDir)%(Directory)')" />
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeCustomBuildOutput;
+    </ComputeLinkInputsTargets>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeCustomBuildOutput;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ComputeImpLibInputsTargets>
+      $(ComputeImpLibInputsTargets);
+      ComputeCustomBuildOutput;
+    </ComputeImpLibInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Compute CL Outputs  targets
+       ******************************************************************************************* -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LinkCompiled>$(LinkCompiled)</LinkCompiled>
+      <LibCompiled>$(LibCompiled)</LibCompiled>
+      <ImpLibCompiled>$(ImpLibCompiled)</ImpLibCompiled>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Add CL generates .obj files to Obj item group, it will be used by lib or link -->
+  <Target Name="ComputeCLOutputs"
+          DependsOnTargets="$(ComputeCompileInputsTargets)"
+          Condition="'@(ClCompile)' != ''">
+
+    <ItemGroup>
+      <!-- No object file name defined: filename.obj -->
+      <Obj Condition="'%(ClCompile.ObjectFileName)'=='' and '%(ClCompile.ExcludedFromBuild)'!='true' and '%(ClCompile.CompilerIteration)' == ''" Include="@(ClCompile->'%(Filename).obj')">
+        <LinkCompiled>%(ClCompile.LinkCompiled)</LinkCompiled>
+        <LibCompiled>%(ClCompile.LibCompiled)</LibCompiled>
+        <ImpLibCompiled>%(ClCompile.ImpLibCompiled)</ImpLibCompiled>
+      </Obj>
+      <!-- Object file name is a directory (has trailing slash): ofn\filename.obj -->
+      <Obj Condition="HasTrailingSlash('%(ClCompile.ObjectFileName)') and '%(ClCompile.ExcludedFromBuild)'!='true' and '%(ClCompile.CompilerIteration)' == ''" Include="@(ClCompile->'%(ObjectFileName)%(Filename).obj')">
+        <LinkCompiled>%(ClCompile.LinkCompiled)</LinkCompiled>
+        <LibCompiled>%(ClCompile.LibCompiled)</LibCompiled>
+        <ImpLibCompiled>%(ClCompile.ImpLibCompiled)</ImpLibCompiled>
+      </Obj>
+      <!-- Object file name is a file (does not has trailing slash): ofn -->
+      <Obj Condition="'%(ClCompile.ObjectFileName)' != '' and !HasTrailingSlash('%(ClCompile.ObjectFileName)') and '%(ClCompile.ExcludedFromBuild)'!='true' and '%(ClCompile.CompilerIteration)' == ''" Include="@(ClCompile->'%(ObjectFileName)')" >
+        <LinkCompiled>%(ClCompile.LinkCompiled)</LinkCompiled>
+        <LibCompiled>%(ClCompile.LibCompiled)</LibCompiled>
+        <ImpLibCompiled>%(ClCompile.ImpLibCompiled)</ImpLibCompiled>
+      </Obj>
+    </ItemGroup>
+
+  </Target>
+
+  <Target Name="ComputeCLGeneratedLinkInputs"
+          DependsOnTargets="ComputeCLOutputs"
+          >
+    <ItemGroup>
+      <Link Include="@(Obj->WithMetadataValue('LinkCompiled', 'true')->ClearMetadata())" />
+    </ItemGroup>
+
+    <!-- ManagedAssembly property defined as false by default for VC projects
+         so we need to set it to true when needed here -->
+    <PropertyGroup>
+      <ManagedAssembly Condition="'%(Obj.CompileAsManaged)' != '' and '%(Obj.CompileAsManaged)' != 'false'">true</ManagedAssembly>
+    </PropertyGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeCLGeneratedLinkInputs;
+    </ComputeLinkInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="ComputeCLGeneratedLibInputs"
+          DependsOnTargets="ComputeCLOutputs"
+          >
+    <ItemGroup>
+      <Lib Include="@(Obj->WithMetadataValue('LibCompiled', 'true')->ClearMetadata())" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeCLGeneratedLibInputs;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="ComputeCLGeneratedImpLibInputs"
+          DependsOnTargets="ComputeCLOutputs"
+          >
+    <ItemGroup>
+      <ImpLib Include="@(Obj->WithMetadataValue('ImpLibCompiled', 'true')->ClearMetadata())" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeImpLibInputsTargets>
+      $(ComputeImpLibInputsTargets);
+      ComputeCLGeneratedImpLibInputs;
+    </ComputeImpLibInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Compute project file link or lib inputs
+       ******************************************************************************************* -->
+  <Target Name="ComputeLinkInputsFromProject">
+    <ItemGroup>
+      <Object Remove="@(Object)" Condition="'%(Object.ExcludedFromBuild)'=='true'" />
+      <Library Remove="@(Library)" Condition="'%(Library.ExcludedFromBuild)'=='true'" />
+      <Resource Remove="@(Resource)" Condition="'%(Resource.ExcludedFromBuild)'=='true'" />
+      <Link Include="@(Object->ClearMetadata())" />
+      <Link Include="@(Library->ClearMetadata())" />
+      <Link Include="@(Resource->ClearMetadata())" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeLinkInputsFromProject;
+    </ComputeLinkInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="ComputeLibInputsFromProject">
+    <ItemGroup>
+      <Object Remove="@(Object)" Condition="'%(Object.ExcludedFromBuild)'=='true'" />
+      <Library Remove="@(Library)" Condition="'%(Library.ExcludedFromBuild)'=='true'" />
+      <Resource Remove="@(Resource)" Condition="'%(Resource.ExcludedFromBuild)'=='true'" />
+      <Lib Include="@(Object->ClearMetadata())" />
+      <Lib Include="@(Library->ClearMetadata())" />
+      <Lib Include="@(Resource->ClearMetadata())" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeLibInputsFromProject;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="ComputeImpLibInputsFromProject">
+    <ItemGroup>
+      <Object Remove="@(Object)" Condition="'%(Object.ExcludedFromBuild)'=='true'" />
+      <Library Remove="@(Library)" Condition="'%(Library.ExcludedFromBuild)'=='true'" />
+      <Resource Remove="@(Resource)" Condition="'%(Resource.ExcludedFromBuild)'=='true'" />
+      <ImpLib Include="@(Object->ClearMetadata())" />
+      <ImpLib Include="@(Library->ClearMetadata())" />
+      <ImpLib Include="@(Resource->ClearMetadata())" />
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup>
+    <ComputeImpLibInputsTargets>
+      $(ComputeImpLibInputsTargets);
+      ComputeImpLibInputsFromProject;
+    </ComputeImpLibInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Link targets
+       ******************************************************************************************* -->
+  <Target Name="_Link"
+          DependsOnTargets="$(BeforeLinkTargets);$(ComputeLinkInputsTargets);PrepareResourceNames;MakeDirsForLink;DoLinkOutputFilesMatch;PreLinkEvent;Link;ComputeLinkImportLibraryOutputsForClean;$(AfterLinkTargets)"
+          Condition="'$(LinkCompiled)' == 'true'">
+  </Target>
+
+  <Target Name="DoLinkOutputFilesMatch" Condition="'@(Link)' != ''">
+    <ItemGroup>
+      <_OutputFileFromLink Include="%(Link.OutputFile)" />
+    </ItemGroup>
+    <VCMessage Condition="'@(_OutputFileFromLink)' == ''" Code="MSB8012" Type="Warning" Arguments="TargetPath;$(TargetPath);Linker;;Link"/>
+    <VCMessage Condition="'@(_OutputFileFromLink)' != '' and '%(_OutputFileFromLink.FullPath)' != '$([System.IO.Path]::GetFullPath($(TargetPath)))'" Code="MSB8012" Type="Warning" Arguments="TargetPath;$(TargetPath);Linker;%(_OutputFileFromLink.FullPath);Link"/>
+    <VCMessage Condition="'@(_OutputFileFromLink)' != '' and '%(_OutputFileFromLink.Extension)' != '$(TargetExt)'" Code="MSB8012" Type="Warning" Arguments="TargetExt;$(TargetExt);Linker;%(_OutputFileFromLink.Extension);Link"/>
+    <VCMessage Condition="'@(_OutputFileFromLink)' != '' and '%(_OutputFileFromLink.Filename)' != '$(TargetName)'" Code="MSB8012" Type="Warning" Arguments="TargetName;$(TargetName);Linker;%(_OutputFileFromLink.Filename);Link"/>
+  </Target>
+
+  <!-- Easy to override before/after targets -->
+  <PropertyGroup>
+    <BeforeLinkTargets>
+      $(BeforeLinkTargets);
+      BeforeLink;
+    </BeforeLinkTargets>
+    <AfterLinkTargets>
+      $(AfterLinkTargets);
+      AfterLink;
+    </AfterLinkTargets>
+  </PropertyGroup>
+
+  <!-- Makes the the directories that Link uses -->
+  <Target Name="MakeDirsForLink">
+    <!-- List of directories and files whose directories should be made prior to running Link -->
+
+    <!-- Because the import library metadata contains an item expression, we need to
+         force a scalar expansion here -->
+    <PropertyGroup>
+      <_LinkImportLibrary>%(Link.ImportLibrary)</_LinkImportLibrary>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_LinkImportLibraryFile Include="$(_LinkImportLibrary)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(Link)' != ''">
+      <LinkDirsToMake Include="@(Link->Metadata('MapFileName')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <LinkDirsToMake Include="@(Link->Metadata('OutputFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <LinkDirsToMake Include="@(Link->Metadata('ManifestFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <LinkDirsToMake Include="@(Link->Metadata('ProgramDatabaseFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <LinkDirsToMake Include="@(Link->Metadata('WindowsMetadataFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+      <LinkDirsToMake Include="@(_LinkImportLibraryFile->'%(RootDir)%(Directory)')" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(LinkDirsToMake)" />
+
+    <ItemGroup>
+      <LinkDirsToMake Remove="@(LinkDirsToMake)" />
+      <_LinkImportLibraryFile Remove="@(_LinkImportLibraryFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ComputeLinkImportLibraryOutputsForClean" Condition="'$(LinkSkippedExecution)' != 'true'">
+    <ItemGroup>
+      <_LinkImportLibrary Include="%(Link.ImportLibrary)" Condition="Exists('%(Link.ImportLibrary)')"/>
+      <_LinkImportLibrary Include="$(OutDir)$(TargetName).lib" Condition="Exists('$(OutDir)$(TargetName).lib')"/>
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(TLogLocation)$(ProjectName).write.1.tlog" Lines="^$(ProjectPath);@(_LinkImportLibrary->'%(FullPath)');@(_LinkImportLibrary->'%(RootDir)%(Directory)%(FileName).exp')" Condition="'@(_LinkImportLibrary)' != ''"/>
+
+    <ItemGroup>
+      <_LinkImportLibrary Remove="@(_LinkImportLibrary)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="BeforeLink"/>
+  <Target Name="AfterLink"/>
+
+  <!-- *******************************************************************************************
+        Compute Reference Link Inputs
+       ******************************************************************************************* -->
+
+  <Target Name="_RemoveNameMetadataFromProjectReferenceItems" Condition="'@(ProjectReference)'!=''" BeforeTargets="ResolveProjectReferences">
+    <!-- ProjectReference items often have metadata called 'Name' on them, which is also
+             used for a different purpose by tasks like Lib. So, clear it out -->
+    <ItemGroup>
+      <ProjectReference>
+        <Name />
+      </ProjectReference>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ComputeResolveLinkObj" Condition="'@(ProjectReference)'!=''" >
+    <CallTarget Targets="ResolvedLinkObjs" Condition="'%(_MSBuildProjectReferenceExistent.UseLibraryDependencyInputs)'=='true'" />
+  </Target>
+
+  <Target Name="ComputeReferenceLinkInputs"
+          DependsOnTargets="ResolvedLinkLib;ComputeResolveLinkObj"
+          Returns="@(ProjectReferenceToLink)"
+          Condition="@(ProjectReference) != ''"
+          >
+
+    <ItemGroup Condition="'@(_ResolvedNativeProjectReferencePaths)' != ''" >
+      <ProjectReferenceToLink Condition=" '%(_ResolvedNativeProjectReferencePaths.FileType)'=='lib'
+                                      and  '%(_ResolvedNativeProjectReferencePaths.LinkLibraryDependencies)'!='false'
+                                      and ('%(_ResolvedNativeProjectReferencePaths.UseLibraryDependencyInputs)'!='true' or '%(_ResolvedNativeProjectReferencePaths.ProjectType)'!='StaticLibrary')"
+            Include="@(_ResolvedNativeProjectReferencePaths)"/>
+      <ProjectReferenceToLink Condition="'%(_ResolvedNativeProjectReferencePaths.FileType)'=='obj'
+                                      and '%(_ResolvedNativeProjectReferencePaths.LinkLibraryDependencies)'!='false'
+                                      and '%(_ResolvedNativeProjectReferencePaths.UseLibraryDependencyInputs)'=='true'
+                                      and '%(_ResolvedNativeProjectReferencePaths.ProjectType)'=='StaticLibrary'"
+            Include="@(_ResolvedNativeProjectReferencePaths)"/>
+      <ProjectReferenceToLink>
+        <CopyLocal Condition="'%(ProjectReferenceToLink.CopyLocal)'==''">%(ProjectReferenceToLink.Private)</CopyLocal>
+      </ProjectReferenceToLink>
+      <Link Condition="'@(ProjectReferenceToLink)'!=''" Include="@(ProjectReferenceToLink->ClearMetadata()->Distinct())" />
+    </ItemGroup>
+
+    <VCMessage Condition="'%(ProjectReferenceToLink.ProjectType)' == 'DynamicLibrary' and '$(WindowsAppContainer)' == 'true' and '%(ProjectReferenceToLink.WindowsAppContainer)' != 'true'" Code="MSB8019" Type="Warning" Arguments="@(ProjectReferenceToLink);%(ProjectReferenceToLink.MSBuildSourceProjectFile)"/>
+
+    <Message Condition="'$(_REFERENCE_DEBUG)'=='true'" Text="ProjectReferenceToLink=@(ProjectReferenceToLink)" Importance="high" />
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+      $(ComputeLinkInputsTargets);
+      ComputeReferenceLinkInputs;
+    </ComputeLinkInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Compute Reference Lib Inputs
+       ******************************************************************************************* -->
+  <Target Name="ComputeReferenceLibInputs"
+          DependsOnTargets="ResolvedLinkLib"
+          Returns="@(ProjectReferenceToLink)"
+          Condition="@(ProjectReference) != ''">
+
+    <ItemGroup Condition="'@(_ResolvedNativeProjectReferencePaths)' != ''" >
+      <ProjectReferenceToLink Condition=" '%(_ResolvedNativeProjectReferencePaths.FileType)'=='lib'
+                                      and  '%(_ResolvedNativeProjectReferencePaths.LinkLibraryDependencies)'!='false'
+                                      and ('%(_ResolvedNativeProjectReferencePaths.UseLibraryDependencyInputs)'=='false' or '%(_ResolvedNativeProjectReferencePaths.ProjectType)'!='StaticLibrary')"
+            Include="@(_ResolvedNativeProjectReferencePaths)"/>
+      <ProjectReferenceToLink Condition="'%(_ResolvedNativeProjectReferencePaths.FileType)'=='obj'
+                                      and '%(_ResolvedNativeProjectReferencePaths.LinkLibraryDependencies)'!='false'
+                                      and '%(_ResolvedNativeProjectReferencePaths.UseLibraryDependencyInputs)'=='true'
+                                      and '%(_ResolvedNativeProjectReferencePaths.ProjectType)'=='StaticLibrary'"
+            Include="@(_ResolvedNativeProjectReferencePaths)"/>
+      <ProjectReferenceToLink>
+        <CopyLocal Condition="'%(ProjectReferenceToLink.CopyLocal)'==''">%(ProjectReferenceToLink.Private)</CopyLocal>
+      </ProjectReferenceToLink>
+      <Lib Condition="'@(ProjectReferenceToLink)'!=''" Include="@(ProjectReferenceToLink->ClearMetadata()->Distinct())" />
+    </ItemGroup>
+    <Message Condition="'$(_REFERENCE_DEBUG)'=='true'" Text="ProjectReferenceToLink=@(ProjectReferenceToLink)" Importance="high" />
+  </Target>
+
+  <PropertyGroup>
+    <ComputeLibInputsTargets>
+      $(ComputeLibInputsTargets);
+      ComputeReferenceLibInputs;
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+
+  <!-- *******************************************************************************************
+        Lib targets
+       ******************************************************************************************* -->
+  <Target Name="_Lib"
+          DependsOnTargets="$(BeforeLibTargets);$(ComputeLibInputsTargets);MakeDirsForLib;DoLibOutputFilesMatch;PreLinkEvent;Lib;$(AfterLibTargets);"
+          Condition="'$(LibCompiled)' == 'true'">
+  </Target>
+
+  <Target Name="DoLibOutputFilesMatch" Condition="'@(Lib)' != ''">
+    <ItemGroup>
+      <_OutputFileFromLib Include="%(Lib.OutputFile)" />
+    </ItemGroup>
+    <VCMessage Condition="'@(_OutputFileFromLib)' == ''" Code="MSB8012" Type="Warning" Arguments="TargetPath;$(TargetPath);Linker;;Link"/>
+    <VCMessage Condition="'@(_OutputFileFromLib)' != '' and '%(_OutputFileFromLib.FullPath)' != '$([System.IO.Path]::GetFullPath($(TargetPath)))'" Code="MSB8012" Type="Warning" Arguments="TargetPath;$(TargetPath);Library;%(_OutputFileFromLib.FullPath);Lib"/>
+    <VCMessage Condition="'@(_OutputFileFromLib)' != '' and '%(_OutputFileFromLib.Extension)' != '$(TargetExt)'" Code="MSB8012" Type="Warning" Arguments="TargetExt;$(TargetExt);Library;%(_OutputFileFromLib.Extension);Lib"/>
+    <VCMessage Condition="'@(_OutputFileFromLib)' != '' and '%(_OutputFileFromLib.Filename)' != '$(TargetName)'" Code="MSB8012" Type="Warning" Arguments="TargetName;$(TargetName);Library;%(_OutputFileFromLib.Filename);Lib"/>
+  </Target>
+
+  <!-- Makes the the directories that Lib uses -->
+  <Target Name="MakeDirsForLib">
+    <!-- List of directories and files whose directories should be made prior to running Lib -->
+    <ItemGroup Condition="'@(Lib)' != ''">
+      <LibDirsToMake Include="@(Lib->Metadata('OutputFile')->DirectoryName()->Distinct()->ClearMetadata())" />
+    </ItemGroup>
+
+    <MakeDir Directories="@(LibDirsToMake)" />
+
+    <ItemGroup>
+      <LibDirsToMake Remove="@(LibDirsToMake)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Easy to override before/after targets -->
+  <PropertyGroup>
+    <BeforeLibTargets>
+      $(BeforeLibTargets);
+      BeforeLib;
+    </BeforeLibTargets>
+    <AfterLibTargets>
+      $(AfterLibTargets);
+      AfterLib;
+    </AfterLibTargets>
+  </PropertyGroup>
+
+  <Target Name="BeforeLib"/>
+  <Target Name="AfterLib"/>
+
+  <!-- *******************************************************************************************
+        UNDONE: Compute Lib AdditionalOptions
+       ******************************************************************************************* -->
+  <PropertyGroup>
+    <ComputeLibInputsTargets>
+      ComputeLibAdditionalOptions;
+      $(ComputeLibInputsTargets)
+    </ComputeLibInputsTargets>
+  </PropertyGroup>
+
+  <Target Name="ComputeLibAdditionalOptions">
+    <ItemGroup>
+      <Lib Include="captureLibAdditionalOptions"/>
+    </ItemGroup>
+    <PropertyGroup>
+      <LibAdditionalOptions>%(Lib.AdditionalOptions)</LibAdditionalOptions>
+    </PropertyGroup>
+    <ItemGroup>
+      <Lib Remove="captureLibAdditionalOptions"/>
+    </ItemGroup>
+  </Target>
+
+  <!-- *******************************************************************************************
+        ImpLib targets
+       ******************************************************************************************* -->
+  <Target Name="_ImpLib"
+          DependsOnTargets="$(BeforeImpLibTargets);$(ComputeImpLibInputsTargets);PreLinkEvent;ImpLib;$(AfterImpLibTargets);"
+          Condition="'$(ImpLibCompiled)' == 'true'">
+  </Target>
+
+  <!-- Easy to override before/after targets -->
+  <PropertyGroup>
+    <BeforeImpLibTargets>
+      $(BeforeImpLibTargets);
+      BeforeImpLib;
+    </BeforeImpLibTargets>
+    <AfterImpLibTargets>
+      $(AfterImpLibTargets);
+      AfterImpLib;
+    </AfterImpLibTargets>
+  </PropertyGroup>
+
+  <Target Name="BeforeImpLib"/>
+  <Target Name="AfterImpLib"/>
+
+  <!-- Platform targets will override -->
+  <Target Name="Midl"/>
+  <Target Name="ClCompile"/>
+  <Target Name="ResourceCompile"/>
+  <Target Name="Link"/>
+  <Target Name="Lib"/>
+  <Target Name="ImpLib"/>
+
+  <Target Name="AfterBuildGenerateSourcesEvent"/>
+  <Target Name="ClCompile"/>
+  <Target Name="ResourceCompile"/>
+  <Target Name="AfterBuildCompileEvent"/>
+  <Target Name="Lib"/>
+  <Target Name="Link"/>
+  <Target Name="ALink"/>
+  <Target Name="Manifest"/>
+  <Target Name="XdcMake"/>
+  <Target Name="BscMake"/>
+  <Target Name="CustomBuildProj"/>
+  <Target Name="FxCop"/>
+  <Target Name="Appverifier"/>
+  
+  <!-- Misc targets that I can't easily override (things from Microsoft.Common.targets) -->
+  <Target Name="CreateManifestResourceNames" />
 
   <!-- *******************************************************************************************
         Property pages

@@ -133,6 +133,57 @@
 
     <Exec Command="%(CustomBuildStep.Command)$(_BuildSuffix)" />
   </Target>
-  
-  
+
+  <!-- *******************************************************************************************
+        CLCompile
+       ******************************************************************************************* -->
+
+  <Target Name="ClCompile"
+          Condition="'@(ClCompile)' != ''"
+          DependsOnTargets="SelectClCompile">
+    <Message Text="Compiling %(ClCompile.Identity)" Condition="'%(ClCompile.ExcludedFromBuild)' != 'true'" />
+  </Target>
+
+  <!-- *******************************************************************************************
+        Link
+       ******************************************************************************************* -->
+
+  <Target Name="Link"
+          Condition="'@(Link)' != ''">
+    <Message Text="Linking @(Link) into %(Link.OutputFile)" />
+
+    <Message Text="$(MSBuildProjectFile) -&gt; $(TargetPath)" Importance="High" />
+  </Target>
+
+  <!-- *******************************************************************************************
+        Lib
+       ******************************************************************************************* -->
+
+  <Target Name="Lib">
+    
+  </Target>
+
+  <!-- *******************************************************************************************
+        RegisterDll
+       ******************************************************************************************* -->
+  <Target Name="RegisterOutput"
+          Condition="'$(EmbedManifest)'=='true' and '$(LinkSkippedExecution)' != 'true' and ('$(_IsNativeEnvironment)' == 'true' or '$(Platform)' == 'Win32')">
+
+    <Exec Command="regsvr32 /s &quot;%(Link.OutputFile)&quot;" Condition="'$(ConfigurationType)'=='DynamicLibrary' and '%(Link.RegisterOutput)'=='true' and '%(Link.PerUserRedirection)'!='true'" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="_RegisterOutputExitCode"/>
+    </Exec>
+    <Exec Command="regsvr32 /s /n /i:user &quot;%(Link.OutputFile)&quot;" Condition="'$(ConfigurationType)'=='DynamicLibrary' and '%(Link.RegisterOutput)'=='true' and '%(Link.PerUserRedirection)'=='true'" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="_RegisterOutputExitCode"/>
+    </Exec>
+    <Exec Command="&quot;%(Link.OutputFile)&quot; /RegServer" Condition="'$(ConfigurationType)'=='Application' and '%(Link.RegisterOutput)'=='true' and '%(Link.PerUserRedirection)'!='true'" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="_RegisterOutputExitCode"/>
+    </Exec>
+    <Exec Command="&quot;%(Link.OutputFile)&quot; /RegServerPerUser" Condition="'$(ConfigurationType)'=='Application' and '%(Link.RegisterOutput)'=='true' and '%(Link.PerUserRedirection)'=='true'" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="_RegisterOutputExitCode"/>
+    </Exec>
+    <VCMessage Code="MSB8011" Type="Error" Condition="'$(_RegisterOutputExitCode)' != '' and '$(_RegisterOutputExitCode)' != '0'" />
+  </Target>
+
+  <Import Condition="'$(_CppCommonExtensionTargets)' != ''" Project="$(_CppCommonExtensionTargets)" />
+
 </Project>
