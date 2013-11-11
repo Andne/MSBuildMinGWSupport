@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportBefore\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportBefore')" />
+
+  <PropertyGroup>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'!=''">$(IntermediateOutputPath)</IntDir>
+    <IntDir Condition="'$(IntDir)'=='' AND '$(IntermediateOutputPath)'==''">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(SolutionDir)' != ''">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(OutDir)'=='' AND '$(SolutionDir)' == ''">$(IntDir)</OutDir>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\MinGW.Cpp.Common.props" />
+
+  <PropertyGroup>
+    <ExecutablePath Condition="'$(ExecutablePath)' == ''">$(MinGWRoot)bin;$(VSInstallDir)Common7\Tools\bin;$(VSInstallDir)Common7\tools;$(VSInstallDir)Common7\ide;$(ProgramFiles)\HTML Help Workshop;$(MSBuildToolsPath32);$(VSInstallDir);$(SystemRoot)\SysWow64;$(FxCopDir);$(PATH);</ExecutablePath>
+    <IncludePath Condition="'$(IncludePath)' == ''">$(MinGWRoot)include;$(MinGWRoot)lib\gcc\mingw32\4.8.1\include;$(MinGWRoot)lib\gcc\mingw32\4.8.1\include\c++;$(MinGWRoot)lib\gcc\mingw32\4.8.1\include\c++\mingw32;</IncludePath>
+    <ReferencePath Condition="'$(ReferencePath)' == ''">$(MinGWRoot)lib;</ReferencePath>
+    <LibraryPath Condition="'$(LibraryPath)' == ''">$(MinGWRoot)lib;</LibraryPath>
+    <!-- <LibraryWPath Condition="'$(LibraryWPath)' == ''">$(WindowsSDK_MetadataPath)</LibraryWPath> -->
+    <!-- <SourcePath Condition="'$(SourcePath)' == ''">$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath> -->
+    <ExcludePath Condition="'$(ExcludePath)' == ''">$(MinGWRoot)include;$(MSBuildToolsPath32);$(MinGWRoot)lib;</ExcludePath>
+    <NativeExecutablePath Condition="'$(NativeExecutablePath)' == ''">$(ExecutablePath)</NativeExecutablePath>
+    <!-- <DebugCppRuntimeFilesPath Condition="'$(DebugCppRuntimeFilesPath)' == ''">$(VCInstallDir)redist\Debug_NonRedist\x86</DebugCppRuntimeFilesPath> -->
+  </PropertyGroup>
+  
+  <!-- Defines specific to this version of GCC -->
+  <PropertyGroup>
+    <GCCStandardPreprocessorDefines>__GNUC__=4;__GNUC_MINOR__=8;__GNUC_PATCHLEVEL__=1;$(GCCStandardPreprocessorDefines)</GCCStandardPreprocessorDefines>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportAfter\*.props" Condition="Exists('$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportAfter')" />
+  
+</Project>

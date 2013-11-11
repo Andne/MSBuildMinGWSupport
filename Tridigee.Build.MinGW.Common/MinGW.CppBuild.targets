@@ -302,4 +302,36 @@
         $(VCTargetsPath)$(LangID)\lib.xml
     "/>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(UseDefaultPropertyPageSchemas)' != 'false' and '$(UseDefaultGeneralPropertyPageSchema)' != 'false'">
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\general.xml">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\general_ps.xml">
+      <Context>PropertySheet</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(VCTargetsPath)$(LangID)\folder.xml">
+      <Context>File;BrowseObject</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseDefaultPropertyPageSchemas)' != 'false'">
+    <!-- Platform and Platform toolset schemas. We want to include them last so that user's property pages can override the standard ones included above. -->
+    <PropertyPageSchema Condition="'$(ConfigurationType)' != 'Utility'" Include="
+        $(VCTargetsPathEffective)Platforms\$(Platform)\$(LangID)\*.xml;
+        $(VCTargetsPathEffective)Platforms\$(Platform)\PlatformToolsets\$(PlatformToolset)\$(LangID)\*.xml;
+    "/>
+  </ItemGroup>
+
+  <!-- Tools that show up in the IDE property pages for exe and dll projects -->
+  <ItemGroup Condition="'$(UseDefaultProjectTools)' != 'false' and ('$(ConfigurationType)' == 'Application' or '$(ConfigurationType)' == 'DynamicLibrary')">
+    <ProjectTools Include="Link"/>
+    <ProjectTools Include="CustomBuildStep"/>
+  </ItemGroup>
+
+  <!-- Tools that show up in the IDE property pages for lib project-->
+  <ItemGroup Condition="'$(UseDefaultProjectTools)' != 'false' and '$(ConfigurationType)' == 'StaticLibrary'">
+    <ProjectTools Include="Lib"/>
+    <ProjectTools Include="CustomBuildStep"/>
+  </ItemGroup>
 </Project>

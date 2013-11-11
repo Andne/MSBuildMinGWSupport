@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         ToolsVersion="4.0">
+  <Import Project="$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportBefore\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportBefore')" />
+  <Import Project="$(VCTargetsPath)\MinGW.CppCommon.targets" />
+  <Import Project="$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportAfter\*.targets" Condition="Exists('$(VCTargetsPath)\Platforms\MinGW32\PlatformToolsets\4.8.1\ImportAfter')" />
+</Project>

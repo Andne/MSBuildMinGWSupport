@@ -8,16 +8,27 @@
     <PlatformShortName>x86</PlatformShortName>
     <PlatformArchitecture>32</PlatformArchitecture>
     <PlatformTarget>x86</PlatformTarget>
-    <DefaultPlatformToolset Condition="'$(DefaultPlatformToolset)' == ''">MinGW</DefaultPlatformToolset>
+    <DefaultPlatformToolset Condition="'$(DefaultPlatformToolset)' == ''">4_8_1</DefaultPlatformToolset>
     
     <!-- Define upgrade capabilities - None -->
-    <_UpgradePlatformToolsetFor_Tools_MinGW>MinGW</_UpgradePlatformToolsetFor_Tools_MinGW>
+    <_UpgradePlatformToolsetFor_4_8_1>481</_UpgradePlatformToolsetFor_4_8_1>
     
     <!-- Define some nice names -->
-    <_PlatformToolsetShortNameFor_Tools_MinGW Condition="'$(_PlatformToolsetShortNameFor_Tools_MinGW)' == ''">MinGW</_PlatformToolsetShortNameFor_Tools_MinGW>
-    <_PlatformToolsetFriendlyNameFor_Tools_MinGW Condition="'$(_PlatformToolsetFriendlyNameFor_Tools_MinGW)' == ''">MinGW</_PlatformToolsetFriendlyNameFor_Tools_MinGW>
+    <_PlatformToolsetShortNameFor_4_8_1 Condition="'$(_PlatformToolsetShortNameFor_Tools_MinGW)' == ''">4_8_1</_PlatformToolsetShortNameFor_4_8_1>
+    <_PlatformToolsetFriendlyNameFor_4_8_1 Condition="'$(_PlatformToolsetFriendlyNameFor_Tools_MinGW)' == ''">GCC 4.8.1</_PlatformToolsetFriendlyNameFor_4_8_1>
 
-    <PlatformToolset Condition="'$(PlatformToolset)' == ''">MinGW</PlatformToolset>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">4_8_1</PlatformToolset>
+  </PropertyGroup>
+  
+  <!-- Find the root location of MinGW -->
+  <PropertyGroup>
+    <MinGWRoot Condition="('$(MinGWRoot)' == '') and Exists('C:\Tools\MinGW')">C:\Tools\MinGW\</MinGWRoot>
+    <MinGWRoot Condition="('$(MinGWRoot)' == '') and Exists('C:\MinGW')">C:\MinGW\</MinGWRoot>
+  </PropertyGroup>
+  
+  <!-- Standard defines from GCC -->
+  <PropertyGroup>
+    <GCCStandardPreprocessorDefines>$(GCCStandardPreprocessorDefines)</GCCStandardPreprocessorDefines>
   </PropertyGroup>
   
   <!-- Import After -->

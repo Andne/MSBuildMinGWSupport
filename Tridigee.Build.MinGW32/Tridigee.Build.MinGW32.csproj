@@ -9,14 +9,16 @@
     <VCTargetsRootProject>true</VCTargetsRootProject>
     <FileCopyOnlyProject>true</FileCopyOnlyProject>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Platforms\MinGW32\PlatformToolsets\4_8_1\MinGW.Cpp.MinGW32.4_8_1.targets" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.default.props" />
     <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.props" />
     <Content Include="Platforms\MinGW32\Microsoft.Cpp.MinGW32.targets" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Platforms\MinGW32\PlatformToolsets\MinGW\MinGW.Cpp.MinGW32.MinGW.props" />
+    <Content Include="Platforms\MinGW32\PlatformToolsets\4_8_1\MinGW.Cpp.MinGW32.4_8_1.props" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
 </Project>

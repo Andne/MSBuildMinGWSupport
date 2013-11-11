@@ -14,7 +14,7 @@
   <StringListProperty Subtype="Folder" Name="AdditionalIncludeDirectories"
                       DisplayName="Additional Include Directories"
                       Description="Specifies one or more directories to add to the include path; separate with semi-colons if more than one.     (-I [path])"
-                      Category="General" Switch="I">
+                      Category="General" Switch="I ">
   </StringListProperty>
   <EnumProperty Name="WarningLevel"
                 DisplayName="Warning Level"
@@ -25,6 +25,26 @@
     <EnumValue Name="EnableAllWarnings" Switch="Wall" DisplayName="EnableAllWarnings" Description="Enables all warnings, including those disabled by default.">
     </EnumValue>
   </EnumProperty>
+  <BoolProperty Name="TreatWarningAsError"
+                DisplayName="Treat Warnings As Errors"
+                Description="Treats all compiler warnings as errors. For a new project, it may be best to use /Werror in all compilations; resolving all warnings will ensure the fewest possible hard-to-find code defects."
+                Category="General" Switch="Werror" SwitchPrefix="-">
+  </BoolProperty>
+  <StringListProperty Name="PreprocessorDefinitions"
+                      DisplayName="Preprocessor Definitions"
+                      Description="Defines a preprocessing symbols for your source file."
+                      Category="Preprocessor" Switch="D ">
+  </StringListProperty>
+  <StringListProperty Name="UndefinePreprocessorDefinitions"
+                      DisplayName="Undefine Preprocessor Definitions"
+                      Description="Specifies one or more preprocessor undefines.     (-U [macro])"
+                      Category="Preprocessor" Switch="U ">
+  </StringListProperty>
+  <BoolProperty Name="UndefineAllPreprocessorDefinitions" DisplayName="Undefine All Preprocessor Definitions" Description="Undefine all previously defined preprocessor values.     (/u)" Category="Preprocessor" Switch="u" F1Keyword="VC.Project.VCCLCompilerTool.UndefineAllPreprocessorDefinitions">
+  </BoolProperty>
+  <BoolProperty Name="IgnoreStandardIncludePath" DisplayName="Ignore Standard Include Paths" Description="Prevents the compiler from searching for include files in directories specified in the INCLUDE environment variables." Category="Preprocessor" Switch="X" F1Keyword="VC.Project.VCCLCompilerTool.IgnoreStandardIncludePath">
+  </BoolProperty>
+
   <StringProperty Name="AdditionalOptions"
                   DisplayName="Additional Options"
                   Description="Additional Options"
