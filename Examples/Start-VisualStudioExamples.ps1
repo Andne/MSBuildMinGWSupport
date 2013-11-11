@@ -17,8 +17,19 @@ $VCTargetsRoot = $VCTargetsRoot + [IO.Path]::DirectorySeparatorChar;
 
 Write-Output "Opening the solution from $ScriptDirectory using VCTargetsPath=$VCTargetsRoot";
 
+$RegistryPath = "HKLM:\SOFTWARE\Microsoft\VisualStudio\11.0\Setup\VS";
+if (-not (Test-Path -Path $RegistryPath))
+{
+    $RegistryPath = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\11.0\Setup\VS";
+}
+if (-not (Test-Path -Path $RegistryPath))
+{
+    Write-Error "Unable to find Visual Studio 2012";
+    Return -1;
+}
+
 # Find Visual Studio 2012
-$DevEnvExe = (Join-Path -Path (Get-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\VisualStudio\11.0\Setup\VS).ProductDir `
+$DevEnvExe = (Join-Path -Path (Get-ItemProperty -Path $RegistryPath).ProductDir `
              (Join-Path -Path "Common7" -ChildPath (Join-Path -Path "IDE" -ChildPath "devenv.exe")));
 
 $Arguments = @();
