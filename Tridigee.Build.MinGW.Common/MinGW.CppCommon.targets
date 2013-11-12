@@ -26,6 +26,13 @@
   </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\MinGW.CppBuild.targets"/>
+  
+  <!-- Prevent CopyFilesToOutputDirectory from trying to copy the actual output file -->
+  <PropertyGroup>
+    <CreateManifestResourceNamesDependsOn></CreateManifestResourceNamesDependsOn>
+    <SkipCopyBuildProduct>true</SkipCopyBuildProduct>
+    <BuildingProject>true</BuildingProject>
+  </PropertyGroup>
 
   <!-- *******************************************************************************************
         AvailableItemName
