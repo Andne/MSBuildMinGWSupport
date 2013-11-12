@@ -11,11 +11,10 @@
     <DefaultPlatformToolset Condition="'$(DefaultPlatformToolset)' == ''">4_8_1</DefaultPlatformToolset>
     
     <!-- Define upgrade capabilities - None -->
-    <_UpgradePlatformToolsetFor_4_8_1>481</_UpgradePlatformToolsetFor_4_8_1>
+    <_UpgradePlatformToolsetFor_4_8_1 Condition="'$(_UpgradePlatformToolsetFor_4_8_1)' == ''">$(DefaultPlatformToolset)</_UpgradePlatformToolsetFor_4_8_1>
     
     <!-- Define some nice names -->
-    <_PlatformToolsetShortNameFor_4_8_1 Condition="'$(_PlatformToolsetShortNameFor_Tools_MinGW)' == ''">4_8_1</_PlatformToolsetShortNameFor_4_8_1>
-    <_PlatformToolsetFriendlyNameFor_4_8_1 Condition="'$(_PlatformToolsetFriendlyNameFor_Tools_MinGW)' == ''">GCC 4.8.1</_PlatformToolsetFriendlyNameFor_4_8_1>
+    <_PlatformToolsetFriendlyNameFor_4_8_1 Condition="'$(_PlatformToolsetFriendlyNameFor_4_8_1)' == ''">GCC 4.8.1</_PlatformToolsetFriendlyNameFor_4_8_1>
 
     <PlatformToolset Condition="'$(PlatformToolset)' == ''">4_8_1</PlatformToolset>
   </PropertyGroup>
