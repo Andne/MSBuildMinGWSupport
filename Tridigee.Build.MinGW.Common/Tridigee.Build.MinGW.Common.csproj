@@ -27,5 +27,8 @@
   <ItemGroup>
     <Content Include="MinGW.Cpp.Common.props" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="MinGW.LD.Common.props" />
+  </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), MinGWSupport.proj))\Tools\MinGWSupport.targets" />
 </Project>

@@ -48,6 +48,9 @@
     <DocumentLibraryDependencies Condition="'$(DocumentLibraryDependencies)' == ''">true</DocumentLibraryDependencies>
   </PropertyGroup>
 
+  <!-- Import CL and Link defaults-->
+  <Import Project="$(VCTargetsPath)\MinGW.LD.Common.props" />
+
   <ItemDefinitionGroup>
     <CustomBuild>
       <Message                     Condition="'%(CustomBuild.Message)'                    == ''">Performing Custom Build Tools</Message>
