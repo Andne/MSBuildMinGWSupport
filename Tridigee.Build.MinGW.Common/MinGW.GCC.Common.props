@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- *******************************************************************************************
+        CLCompile
+       ******************************************************************************************* -->
+
+  <!-- Default gcc options -->
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- General Settings -->
+      <WarningLevel                       Condition="'%(ClCompile.WarningLevel)'                        == ''">TurnOffAllWarnings</WarningLevel>
+
+      <!-- Preprocessor Settings -->
+      <UndefineAllPreprocessorDefinitions Condition="'%(ClCompile.UndefineAllPreprocessorDefinitions)'  == ''">false</UndefineAllPreprocessorDefinitions>
+      <IgnoreStandardIncludePath          Condition="'%(ClCompile.IgnoreStandardIncludePath)'           == ''">false</IgnoreStandardIncludePath>
+      <PreprocessToFile                   Condition="'%(ClCompile.PreprocessToFile)'                    == ''">false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers      Condition="'%(ClCompile.PreprocessSuppressLineNumbers)'       == ''">false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments             Condition="'%(ClCompile.PreprocessKeepComments)'              == ''">false</PreprocessKeepComments>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+</Project>

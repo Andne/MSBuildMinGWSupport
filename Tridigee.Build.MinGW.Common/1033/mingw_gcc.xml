@@ -5,6 +5,7 @@
       Name="CL" PageTemplate="Tool" DisplayName="C/C++" SwitchPrefix="/" Order="10">
   <Rule.Categories>
     <Category Name="General" DisplayName="General" />
+    <Category Name="Preprocessor" DisplayName="Preprocessor" />
     <Category Name="All Options" DisplayName="All Options" Subtype="Search" />
     <Category Name="Command Line" DisplayName="Command Line" Subtype="CommandLine" />
   </Rule.Categories>
@@ -40,11 +41,36 @@
                       Description="Specifies one or more preprocessor undefines.     (-U [macro])"
                       Category="Preprocessor" Switch="U ">
   </StringListProperty>
-  <BoolProperty Name="UndefineAllPreprocessorDefinitions" DisplayName="Undefine All Preprocessor Definitions" Description="Undefine all previously defined preprocessor values.     (/u)" Category="Preprocessor" Switch="u" F1Keyword="VC.Project.VCCLCompilerTool.UndefineAllPreprocessorDefinitions">
+  <BoolProperty Name="UndefineAllPreprocessorDefinitions"
+                DisplayName="Undefine All Preprocessor Definitions"
+                Description="Undefine all previously defined preprocessor values.     (-u )"
+                Category="Preprocessor" Switch="u">
   </BoolProperty>
-  <BoolProperty Name="IgnoreStandardIncludePath" DisplayName="Ignore Standard Include Paths" Description="Prevents the compiler from searching for include files in directories specified in the INCLUDE environment variables." Category="Preprocessor" Switch="X" F1Keyword="VC.Project.VCCLCompilerTool.IgnoreStandardIncludePath">
+  <BoolProperty Name="IgnoreStandardIncludePath"
+                DisplayName="Ignore Standard Include Paths"
+                Description="Prevents the compiler from searching for include files in directories specified in the INCLUDE environment variables."
+                Category="Preprocessor" Switch="X">
   </BoolProperty>
-
+  <BoolProperty Name="PreprocessToFile"
+                DisplayName="Preprocess to a File"
+                Description="Preprocesses C and C++ source files and writes the preprocessed output to a file. This option suppresses compilation, thus it does not produce an .obj file."
+                Category="Preprocessor" Switch="P" SwitchPrefix="-">
+  </BoolProperty>
+  <StringProperty Name="PreprocessOutputPath"
+                  DisplayName="Preprocess Output Path"
+                  Description="Specify the output path for the preprocesser. The default location is the same as the source file(s)."
+                  Category="Preprocessor" Switch="Fi" SwitchPrefix="-" Visible="false">
+  </StringProperty>
+  <BoolProperty Name="PreprocessSuppressLineNumbers"
+                DisplayName="Preprocess Suppress Line Numbers"
+                Description="Preprocess without #line directives."
+                Category="Preprocessor" Switch="EP" SwitchPrefix="-">
+  </BoolProperty>
+  <BoolProperty Name="PreprocessKeepComments"
+                DisplayName="Keep Comments"
+                Description="Suppresses comment strip from source code; requires that one of the 'Preprocessing' options be set.     (/C)"
+                Category="Preprocessor" Switch="C" SwitchPrefix="-">
+  </BoolProperty>
   <StringProperty Name="AdditionalOptions"
                   DisplayName="Additional Options"
                   Description="Additional Options"
@@ -52,4 +78,9 @@
   </StringProperty>
   <BoolProperty Name="BuildingInIde" Visible="false">
   </BoolProperty>
+  <StringListProperty Name="GCCStandardPreprocessorDefines" Switch="D" Visible="false">
+    <StringListProperty.DataSource>
+      <DataSource ItemType="" Label="" HasConfigurationCondition="false" />
+    </StringListProperty.DataSource>
+  </StringListProperty>
 </Rule>

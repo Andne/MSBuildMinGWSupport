@@ -48,7 +48,8 @@
     <DocumentLibraryDependencies Condition="'$(DocumentLibraryDependencies)' == ''">true</DocumentLibraryDependencies>
   </PropertyGroup>
 
-  <!-- Import CL and Link defaults-->
+  <!-- Import Compiler and Linker defaults-->
+  <Import Project="$(VCTargetsPath)\MinGW.GCC.Common.props" />
   <Import Project="$(VCTargetsPath)\MinGW.LD.Common.props" />
 
   <ItemDefinitionGroup>
